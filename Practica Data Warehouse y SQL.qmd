@@ -1,0 +1,71 @@
+---
+title: "Práctica Data WareHouse y SQL"
+format: html
+editor: visual
+alumno: Gustavo Arana Osorio
+---
+
+## Práctica Data WareHouse y SQL 
+
+Representación gráfica de la distribución de estados por país.
+
+# Running Code
+
+Se importa el CSV del resultado de la query.
+
+```{r}
+df_flights <- read.csv("country_flight_status.csv")
+```
+
+
+Visualización del archivo
+
+```{r}
+head(df_flights)
+```
+
+Podemos ver la información que contiene.
+
+
+```{r}
+summary(df_flights)
+```
+Convertimos la columna country y arrival_status en factor.
+
+```{r}
+df_flights$country <- as.factor(df_flights$country)
+df_flights$arrival_status <- as.factor(df_flights$arrival_status)
+summary(df_flights)
+```
+
+Cargamos la librerias de visualización
+
+```{r}
+library("ggplot2")
+library(dplyr)
+library(lubridate)
+
+
+ggplot(df_flights, aes(x=arrival_status, color=country, fill=country, group=country)) + geom_col(aes(y=average_delay), position = 'dodge') + ylab('Average Delay') + xlab('Flight Status') + ggtitle("Flight Status per Country")
+
+```
+
+```{r}
+df_flights |> filter(arrival_status=='DY') -> df_flights_DY
+
+ggplot(df_flights_DY, aes(x=arrival_status, color=country, fill=country, group=country)) + geom_col(aes(y=average_delay), position = 'dodge') + ylab('Average Delay') + xlab('Flight Status') + ggtitle("Flight Status 'DY' per Country")
+
+```
+
+```{r}
+ggplot(data=df_flights,aes(x=country,y=count_flights,color=country))+geom_boxplot()+ylab('Country') + xlab('Total Flights') + ggtitle("Boxplot Count Flights per Country")
+
+```
+En el boxplot podemos identificar la distribución de la cantidad de vuelos por estado y pais.
+
+
+```{r}
+# Filtramos Spain para ver que efectivamente la distribucion del boxplot es correcta.
+df_flights |> filter(country=='Spain') -> df_flights_filtered
+df_flights_filtered
+```
